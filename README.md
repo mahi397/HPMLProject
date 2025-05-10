@@ -24,23 +24,43 @@ We study model variants ranging from 85M to 430M parameters on the **Amazon Elec
 
 ---
 
+## Training and Inference Optimizations
+
+| Optimization                          | Purpose                                                  | Where/How Applied                                                      |
+| ------------------------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------- |
+| **PyTorch AMP (Mixed Precision)**     | Speeds up training and reduces GPU memory usage          | Enabled via `torch.amp.autocast()` + `GradScaler`                      |
+| **torch.compile (reduce-overhead)**   | Removes Python overhead, fuses ops for better throughput | Applied with `torch.compile(model, mode="reduce-overhead")` before DDP |
+| **Checkpointing & Resume**            | Avoids re-training in case of interruption               | Supports `--resume_checkpoint` in CLI                                  |
+| **Pickle-based Dataset Caching**      | Speeds up repeated data loading                          | Uses `.pkl` caching (planned extension to `preprocess_amazon_data`)    |
+| **Gradient Clipping**                 | Prevents exploding gradients                             | `apply_gradient_clipping(model, max_norm=1.0)`                         |
+| **Cosine LR Schedule with Warmup**    | Improves convergence and training stability              | Used in `get_cosine_schedule_with_warmup()`                            |
+| **Improved Loss (Focal Loss)**        | Stabilizes learning for imbalanced distributions         | Custom `focal_loss_on_masked()`                                        |
+| **Parallel Data Loading**             | Speeds up data pipeline                                  | `DataLoader(num_workers=4, pin_memory=True)`                           |
+| **Garbage Collection + empty\_cache** | Frees unused memory between epochs                       | Controlled with `--gc_after_epoch`                                     |
+| **torch.jit.trace**                   | For JIT tracing optimized inference model                | Used in `--use_torch_jit_trace` mode                                   |
+
+ 
 ## Repository Structure
 
 ```text
-├── cache/                    # Preprocessed Amazon Electronics data
-├── models/                 # BERT4Rec model variants
-│   └── bert4rec5M.pt    # iLoRA module definition
-│   └── baseline_85M.pt    # iLoRA module definition
-│   └── scaledup_130M.pt    # iLoRA module definition
-│   └── scaledup_430M.pt    # iLoRA module definition
-│   └── ilora.pt    # iLoRA module definition
+├── cache/                    # Contains pickled Amazon Electronics data
+├── models/                   # Trained BERT4Rec model variants
+│   └── bert4rec5M.pt         
+│   └── baseline_85M.pt    
+│   └── scaledup_130M.pt    
+│   └── scaledup_430M.pt    
+│   └── ilora.pt    
 ├── scripts/                # Training and evaluation scripts
-│   ├── baseline.py            # Training loop with AMP, compile, iLoRA
-│   └── ilora.py         # HR@10, NDCG@10 evaluation
-├── configs/                # YAML/JSON config files per model size
-├── wandb/                  # (Optional) Weights & Biases logs
-├── tensorboard/                  # (Optional) Weights & Biases logs   
+│   ├── baseline.py         # Training loop with AMP, compile
+│   └── ilora.py            # iLoRA implementation
+├── configs/                # YAML config files per model size
+│   └── baseline_85M.yaml     
+│   └── baseline_130M.yaml      
+│   └── baseline_430M.yaml       
+├── wandb/                  # Weights & Biases logs
+├── tensorboard/            # Tensorboard traces   
 ├── results/                # Output plots and tables
+├── requirements.txt        # Required dependencies
 └── README.md               # This file
 ```
 
@@ -50,21 +70,23 @@ We study model variants ranging from 85M to 430M parameters on the **Amazon Elec
 
 To run on a single GPU:
 ```
-torchrun --nproc_per_node=1 scripts/baseline.py --config configs/bert4rec_130m.yaml --use_amp --use_torch_compile --run_profiler
+torchrun --nproc_per_node=1 scripts/baseline.py --config configs/bert4rec_130m.yaml --use_amp --use_torch_compile --run_profiler --run_benchmark
 ```
 
 To run on 2 GPUs:
 ```
-torchrun --nproc_per_node=2 --distributed scripts/baseline.py --config configs/bert4rec_130m.yaml --use_amp --use_torch_compile --run_profiler
+torchrun --nproc_per_node=2 --distributed scripts/baseline.py --config configs/bert4rec_130m.yaml --use_amp --use_torch_compile --run_profiler --run_benchmark
 ```
 
 ## Results and Observations
 
 > Accuracy vs. Model Size
 
-Original baseline results:
+Original baseline results (MovieLens-20M):
+| -------------- | -------------- | ---------------- |
 | Model Size: 5M | HR\@10: 0.0621 | NDCG\@10: 0.0458 |
 
+Final Results (Amazon Electronics):
 | Model Size | HR\@10 | NDCG\@10 |
 | ---------- | ------ | -------- |
 | 85M        | 0.0818 | 0.0637   |         
