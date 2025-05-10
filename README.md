@@ -60,11 +60,37 @@ torchrun --nproc_per_node=2 --distributed scripts/baseline.py --config configs/b
 
 ## Results and Observations
 
+> Accuracy vs. Model Size
+
 Original baseline results:
 | Model Size: 5M | HR\@10: 0.0621 | NDCG\@10: 0.0458 |
 
-| Model Size | HR\@10 | NDCG\@10 | Throughput (samples/sec) | Time per epoch (minutes) | Memory Usage |
-| ---------- | ------ | -------- | ------------------------ | ------------------------ |
+| Model Size | HR\@10 | NDCG\@10 |
+| ---------- | ------ | -------- |
 | 85M        | 0.0818 | 0.0637   |         
 | 130M       | 0.0855 | 0.0682   |
 | 430M       | 0.0858 | 0.0686   |
+
+
+Observation: Accuracy improves with model size but shows diminishing returns beyond 130M.
+
+> Training Throughput (Samples/sec)
+
+| Model + Config       | Throughput | Epoch Time |
+| -------------------- | ---------- | ---------- |
+| 130M + AMP           | 11,428     | 7.5 min    |
+| 130M + AMP + Compile | 13,300     | 6.8 min    |
+| 130M + AMP + iLoRA   | 10,800     | 7.9 min    |
+
+Observation: torch.compile improves throughput by ~17%, and AMP nearly doubles it. iLoRA slightly reduces throughput due to adapter overhead but enables massive parameter reduction (0.55% trainable).
+
+> Memory Usage (Peak GPU Memory)
+
+| Model + Config     | Memory (MB) |
+| ------------------ | ----------- |
+| 130M Baseline      | 11,000      |
+| 130M + AMP         | 7,200       |
+| 130M + AMP + iLoRA | 6,400       |
+
+Observation: AMP and iLoRA significantly reduce memory footprint, enabling larger batch sizes.
+
