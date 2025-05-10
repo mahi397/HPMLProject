@@ -14,13 +14,13 @@ We study model variants ranging from 85M to 430M parameters on the **Amazon Elec
 
 | Milestone                                        | Status      |
 |--------------------------------------------------|-------------|
-| Original baseline BERT4Rec implementation (5M model) on MovieLens-20M dataset     | ✅ Complete |
-| Scaled-up model variants (85M, 130M, 430M) on Amazon Product (Electronics) dataset      | ✅ Complete |
-| Hyperparameter tuning for scaled up variants             | ✅ Complete |
-| AMP and `torch.compile` integration              | ✅ Complete |
-| iLoRA implementation and integration             | ✅ Complete |
-| Experimental benchmarking and profiling          | ✅ Complete |
-| Final evaluation and results summarization       | ✅ Complete |
+| Original baseline BERT4Rec implementation (5M model) on MovieLens-20M dataset     | ✔ Complete |
+| Scaled-up model variants (85M, 130M, 430M) on Amazon Product (Electronics) dataset      | ✔ Complete |
+| Hyperparameter tuning for scaled up variants             | ✔ Complete |
+| AMP and `torch.compile` integration              | ✔ Complete |
+| iLoRA implementation and integration             | ✔ Complete |
+| Experimental benchmarking and profiling          | ✔ Complete |
+| Final evaluation and results summarization       | ✔ Complete |
 
 ---
 
