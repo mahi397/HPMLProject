@@ -59,7 +59,7 @@ We study model variants ranging from 85M to 430M parameters on the **Amazon Elec
 │   └── baseline_430M.yaml       
 ├── wandb/                  # Weights & Biases logs
 ├── tensorboard/            # Tensorboard traces   
-├── results/                # Output plots and tables
+├── results/                # Output visualizations
 ├── requirements.txt        # Required dependencies
 └── README.md               # This file
 ```
