@@ -35,10 +35,36 @@ We study model variants ranging from 85M to 430M parameters on the **Amazon Elec
 │   └── scaledup_430M.pt    # iLoRA module definition
 │   └── ilora.pt    # iLoRA module definition
 ├── scripts/                # Training and evaluation scripts
-│   ├── baseline85M.py            # Training loop with AMP, compile, iLoRA
+│   ├── baseline.py            # Training loop with AMP, compile, iLoRA
 │   └── ilora.py         # HR@10, NDCG@10 evaluation
 ├── configs/                # YAML/JSON config files per model size
 ├── wandb/                  # (Optional) Weights & Biases logs
 ├── tensorboard/                  # (Optional) Weights & Biases logs   
 ├── results/                # Output plots and tables
 └── README.md               # This file
+```
+
+---
+
+## Example Commands
+
+To run on a single GPU:
+```
+torchrun --nproc_per_node=1 scripts/baseline.py --config configs/bert4rec_130m.yaml --use_amp --use_torch_compile --run_profiler
+```
+
+To run on 2 GPUs:
+```
+torchrun --nproc_per_node=2 --distributed scripts/baseline.py --config configs/bert4rec_130m.yaml --use_amp --use_torch_compile --run_profiler
+```
+
+## Results and Observations
+
+Original baseline results:
+| Model Size: 5M | HR\@10: 0.0621 | NDCG\@10: 0.0458 |
+
+| Model Size | HR\@10 | NDCG\@10 | Throughput (samples/sec) | Time per epoch (minutes) | Memory Usage |
+| ---------- | ------ | -------- | ------------------------ | ------------------------ |
+| 85M        | 0.0818 | 0.0637   |         
+| 130M       | 0.0855 | 0.0682   |
+| 430M       | 0.0858 | 0.0686   |
