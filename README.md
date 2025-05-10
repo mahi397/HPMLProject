@@ -27,7 +27,7 @@ We study model variants ranging from 85M to 430M parameters on the **Amazon Elec
 ## Repository Structure
 
 ```text
-├── data/                    # Preprocessed Amazon Electronics data
+├── cache/                    # Preprocessed Amazon Electronics data
 ├── models/                 # BERT4Rec model variants
 │   └── bert4rec5M.pt    # iLoRA module definition
 │   └── baseline_85M.pt    # iLoRA module definition
