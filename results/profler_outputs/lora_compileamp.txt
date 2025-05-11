@@ -1,0 +1,34 @@
+Base model size: 429.15M parameters
+Total params:     431,242,294
+Trainable params: 2,089,008 (0.48%)
+iLoRA model:
+  - Total parameters: 431,242,294
+  - Trainable parameters: 2,089,008
+  - Trainable percentage: 0.48%
+Running PyTorch Profiler...
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+                                                   Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU time avg     Self CUDA   Self CUDA %    CUDA total  CUDA time avg       CPU Mem  Self CPU Mem      CUDA Mem  Self CUDA Mem    # of Calls  Total GFLOPs  
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+                                        model_inference         0.07%      48.286ms        76.93%       56.466s       56.466s       0.000us         0.00%        4.655s        4.655s         256 b           0 b       2.83 Gb      -1.90 Gb             1            --  
+       InductorBenchmarker.benchmark_gpu (dynamo_timed)         0.98%     716.528ms         2.51%        1.845s      44.998ms       0.000us         0.00%        4.397s     107.246ms           0 b           0 b       8.12 Mb     -20.00 Gb            41            --  
+                  _compile.compile_inner (dynamo_timed)         4.70%        3.447s        74.25%       54.502s       54.502s       0.000us         0.00%        4.192s        4.192s         144 b         128 b       8.12 Mb        -512 b             1            --  
+          OutputGraph.call_user_compiler (dynamo_timed)         1.79%        1.311s        67.94%       49.870s       49.870s       0.000us         0.00%        4.192s        4.192s           0 b           0 b       8.12 Mb           0 b             1            --  
+          create_aot_dispatcher_function (dynamo_timed)         6.96%        5.105s        60.90%       44.701s       44.701s       0.000us         0.00%        4.192s        4.192s           0 b      -4.83 Kb       8.12 Mb           0 b             1            --  
+           _recursive_joint_graph_passes (dynamo_timed)         3.41%        2.501s         5.61%        4.115s        4.115s       0.000us         0.00%        4.192s        4.192s           0 b         -70 b       8.12 Mb     -42.50 Kb             1            --  
+                        pad_mm_benchmark (dynamo_timed)         0.30%     221.343ms         1.28%     942.998ms       5.483ms       0.000us         0.00%        4.191s      24.368ms           0 b           0 b       8.12 Mb      -2.51 Gb           172            --  
+                                               aten::mm         1.31%     959.178ms         2.80%        2.058s       2.194ms     107.443ms        11.83%        4.146s       4.421ms           0 b           0 b     103.75 Mb     103.75 Mb           938     67504.986  
+                                   cudaFuncSetAttribute         0.10%      70.882ms         0.46%     336.380ms     769.748us       0.000us         0.00%        4.020s       9.199ms           0 b           0 b           0 b           0 b           437            --  
+                                  Lazy Function Loading         0.02%      15.869ms         0.02%      15.869ms      31.055us        3.917s       431.19%        3.917s       7.666ms           0 b           0 b           0 b           0 b           511            --  
+                                        model_inference         0.00%       0.000us         0.00%       0.000us       0.000us        1.907s       209.87%        1.907s        1.907s           0 b           0 b           0 b           0 b             1            --  
+       InductorBenchmarker.benchmark_gpu (dynamo_timed)         0.00%       0.000us         0.00%       0.000us       0.000us        1.771s       194.89%        1.771s      43.185ms           0 b           0 b           0 b           0 b            41            --  
+           _recursive_joint_graph_passes (dynamo_timed)         0.00%       0.000us         0.00%       0.000us       0.000us     974.668ms       107.28%     974.668ms     974.668ms           0 b           0 b           0 b           0 b             1            --  
+                             Torch-Compiled Region: 0/0         0.00%       2.824ms         1.62%        1.186s        1.186s       0.000us         0.00%     460.518ms     460.518ms         112 b           0 b       4.56 Gb           0 b             1            --  
+                                       CompiledFunction         0.05%      38.985ms         1.61%        1.183s        1.183s     292.262ms        32.17%     460.518ms     460.518ms         112 b         -16 b       4.56 Gb       4.46 Gb             1            --  
+autograd::engine::evaluate_function: CompiledFunctio...         0.00%      73.247us        10.14%        7.445s        7.445s       0.000us         0.00%     324.509ms     324.509ms        -112 b           0 b      -4.55 Gb      -1.90 Gb             1            --  
+                               CompiledFunctionBackward         0.02%      13.962ms        10.14%        7.445s        7.445s     196.221ms        21.60%     324.509ms     324.509ms        -112 b        -112 b      -2.64 Gb      -2.91 Gb             1            --  
+                                            aten::fill_         0.06%      44.418ms         0.26%     188.741ms      24.547us     233.927ms        25.75%     233.964ms      30.428us           0 b           0 b           0 b           0 b          7689            --  
+CachingAutotuner.benchmark_all_configs (dynamo_timed...         0.02%      17.400ms         1.76%        1.290s      64.476ms       0.000us         0.00%     228.677ms      11.434ms           0 b           0 b           0 b           0 b            20            --  
+                                            aten::zero_         0.23%     165.776ms         0.35%     259.868ms      27.406us       0.000us         0.00%     224.399ms      23.666us           0 b           0 b           0 b           0 b          9482            --  
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+Self CPU time total: 73.399s
+Self CUDA time total: 908.512ms

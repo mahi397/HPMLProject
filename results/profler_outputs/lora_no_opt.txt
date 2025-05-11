@@ -1,0 +1,43 @@
+(venv) bash-5.1$ python integ.py --run_profiler --batch_size 128 --epochs 5 --lr 5e-4 --warmup_ratio 0.1 --weight_decay 0.01 --lora_rank 8 --lora_alpha 32 --lora_dropout 0.1 --early_stopping_patience 5
+Processing Amazon Electronics dataset...
+Loading cached data from cache/amazon_data.pkl …
+Train size: 582942
+Valid size: 72867
+Test size: 72869
+Base model size: 429.15M parameters
+Total params:     431,242,294
+Trainable params: 2,089,008 (0.48%)
+iLoRA model:
+  - Total parameters: 431,242,294
+  - Trainable parameters: 2,089,008
+  - Trainable percentage: 0.48%
+/scratch/ms15532/amzrecsys/venv/lib64/python3.9/site-packages/networkx/utils/backends.py:135: RuntimeWarning: networkx backend defined more than once: nx-loopback
+  backends.update(_get_backends("networkx.backends"))
+Running PyTorch Profiler...
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+                                                   Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU time avg     Self CUDA   Self CUDA %    CUDA total  CUDA time avg       CPU Mem  Self CPU Mem      CUDA Mem  Self CUDA Mem    # of Calls  Total GFLOPs  
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+                                        model_inference         0.00%       0.000us         0.00%       0.000us       0.000us        1.224s       260.54%        1.224s        1.224s           0 b           0 b           0 b           0 b             1            --  
+                                        model_inference         1.51%      32.561ms        60.27%        1.303s        1.303s       0.000us         0.00%     281.784ms     281.784ms         256 b         144 b       3.85 Gb     -22.07 Gb             1            --  
+                                           aten::linear         0.04%     888.615us        15.05%     325.490ms       4.650ms       0.000us         0.00%     245.310ms       3.504ms           0 b           0 b      10.42 Gb           0 b            70            --  
+                                            aten::addmm         0.85%      18.389ms         0.95%      20.535ms     789.817us     187.160ms        39.83%     187.160ms       7.198ms           0 b           0 b       5.01 Gb       4.99 Gb            26      3073.665  
+                                               aten::mm         0.99%      21.491ms         2.89%      62.400ms     476.334us     179.359ms        38.17%     179.940ms       1.374ms           0 b           0 b       7.01 Gb       7.01 Gb           131      3081.636  
+    autograd::engine::evaluate_function: AddmmBackward0         0.01%     227.354us         0.09%       1.972ms      82.161us       0.000us         0.00%     159.860ms       6.661ms           0 b           0 b      -3.72 Gb      -4.89 Gb            24            --  
+                                         AddmmBackward0         0.01%     252.230us         0.08%       1.745ms      72.688us       0.000us         0.00%     159.860ms       6.661ms           0 b           0 b       1.17 Gb           0 b            24            --  
+                                 ampere_sgemm_128x64_tn         0.00%       0.000us         0.00%       0.000us       0.000us     150.046ms        31.93%     150.046ms       8.336ms           0 b           0 b           0 b           0 b            18            --  
+                       ampere_sgemm_128x32_sliced1x4_nn         0.00%       0.000us         0.00%       0.000us       0.000us     110.640ms        23.54%     110.640ms     110.640ms           0 b           0 b           0 b           0 b             1            --  
+                                              aten::bmm         6.78%     146.651ms        10.74%     232.311ms      15.487ms      39.638ms         8.43%      66.301ms       4.420ms           0 b           0 b     785.12 Mb     785.12 Mb            15       603.980  
+                                           aten::matmul         0.22%       4.846ms        13.49%     291.752ms       6.631ms       0.000us         0.00%      57.146ms       1.299ms           0 b           0 b       5.41 Gb           0 b            44            --  
+                                ampere_sgemm_128x128_nn         0.00%       0.000us         0.00%       0.000us       0.000us      38.727ms         8.24%      38.727ms       2.582ms           0 b           0 b           0 b           0 b            15            --  
+                                 ampere_sgemm_32x128_tn         0.00%       0.000us         0.00%       0.000us       0.000us      33.403ms         7.11%      33.403ms       2.088ms           0 b           0 b           0 b           0 b            16            --  
+                                 ampere_sgemm_128x32_nn         0.00%       0.000us         0.00%       0.000us       0.000us      26.434ms         5.63%      26.434ms       1.762ms           0 b           0 b           0 b           0 b            15            --  
+                                ampere_sgemm_128x128_tn         0.00%       0.000us         0.00%       0.000us       0.000us      23.697ms         5.04%      23.697ms       2.962ms           0 b           0 b           0 b           0 b             8            --  
+          cudaOccupancyMaxActiveBlocksPerMultiprocessor         0.03%     732.715us         0.41%       8.867ms      96.376us       0.000us         0.00%      20.801ms     226.097us           0 b           0 b           0 b           0 b            92            --  
+                                  Lazy Function Loading         0.14%       3.072ms         0.14%       3.072ms      55.854us      17.218ms         3.66%      17.218ms     313.053us           0 b           0 b           0 b           0 b            55            --  
+void at::native::vectorized_elementwise_kernel<4, at...         0.00%       0.000us         0.00%       0.000us       0.000us      16.940ms         3.60%      16.940ms     260.621us           0 b           0 b           0 b           0 b            65            --  
+      autograd::engine::evaluate_function: BmmBackward0         0.00%      61.243us         0.03%     685.500us      97.929us       0.000us         0.00%      15.942ms       2.277ms           0 b           0 b    -356.00 Mb    -532.00 Mb             7            --  
+                                           BmmBackward0         0.00%      86.310us         0.03%     624.257us      89.180us       0.000us         0.00%      15.942ms       2.277ms           0 b           0 b     176.00 Mb           0 b             7            --  
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+Self CPU time total: 2.162s
+Self CUDA time total: 469.933ms
+
