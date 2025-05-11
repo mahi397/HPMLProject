@@ -43,9 +43,9 @@ We study model variants ranging from 85M to 430M parameters on the **Amazon Elec
 ## Repository Structure
 
 ```text
-├── cache/                    # Contains pickled Amazon Electronics data
-├── models/                   # Trained BERT4Rec model variants
-│   └── bert4rec_5M.pt      
+├── cache/                  # Contains pickled Amazon Electronics data
+├── models/                 # Trained BERT4Rec model variants
+│   └── bert4rec_5M.pt      # not added because size > 100MB and GitHub did not allow adding it
 ├── scripts/                # Training and evaluation scripts
 │   ├── baseline5M.py       # Initial baseline
 │   ├── baseline_final.py   # Training loop with AMP, compile
